@@ -7,10 +7,9 @@ import android.os.Looper;
 
 import com.hzh.nice.http.base.Api;
 import com.hzh.nice.http.base.ApiParams;
-import com.hzh.nice.http.base.ApiUtil;
 import com.hzh.nice.http.callback.ApiCallback;
-import com.hzh.nice.http.inter.Parser;
 import com.hzh.nice.http.inter.Result;
+import com.hzh.nice.http.util.ApiUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,11 +34,9 @@ import okhttp3.Response;
 public class ApiByOkHttp implements Api {
     private final Handler mainHandler;
     private OkHttpClient client;
-    private Parser parser;
 
-    public ApiByOkHttp(Context context, Parser parser) {
+    public ApiByOkHttp(Context context) {
         mainHandler = new Handler(context.getMainLooper());
-        this.parser = parser;
         client = new OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS).build();
@@ -78,7 +75,7 @@ public class ApiByOkHttp implements Api {
             response = call.execute();
             String result = response.body().string();
             ApiUtil.printResult(clazz.getName(), result);
-            res = ApiUtil.parseResult(parser, clazz, result);
+            res = ApiUtil.parseResult(clazz, result);
         } catch (IOException e) {
             throw e;
         } finally {
@@ -136,7 +133,7 @@ public class ApiByOkHttp implements Api {
                 ApiUtil.printResult(clazz.getName(), result);
                 Result res;
                 try {
-                    res = ApiUtil.parseResult(parser, clazz, result);
+                    res = ApiUtil.parseResult(clazz, result);
                     if (callback != null) {
                         final Result finalRes = res;
                         mainHandler.post(new Runnable() {
@@ -226,7 +223,7 @@ public class ApiByOkHttp implements Api {
             response = call.execute();
             String result = response.body().string();
             ApiUtil.printResult(clazz.getName(), result);
-            res = ApiUtil.parseResult(parser, clazz, result);
+            res = ApiUtil.parseResult(clazz, result);
         } catch (IOException e) {
             throw e;
         } finally {
@@ -299,7 +296,7 @@ public class ApiByOkHttp implements Api {
                 ApiUtil.printResult(clazz.getName(), result);
                 Result res;
                 try {
-                    res = ApiUtil.parseResult(parser, clazz, result);
+                    res = ApiUtil.parseResult(clazz, result);
                     if (callback != null) {
                         final Result finalRes = res;
                         mainHandler.post(new Runnable() {

@@ -12,10 +12,12 @@ import com.hzh.nice.http.NiceApiClient;
 import com.hzh.nice.http.NiceHttpConfig;
 import com.hzh.nice.http.base.ApiParams;
 import com.hzh.nice.http.inter.Parser;
+import com.hzh.nice.http.inter.Printer;
 import com.hzh.nice.http.inter.Result;
 import com.hzh.nice.http.okhttp3.connection.ApiByOkHttp;
 import com.hzh.nice.http.okhttp3.connection.sample.bean.SearchEntity;
 import com.hzh.nice.http.okhttp3.connection.sample.util.Const;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,8 +30,9 @@ public class MainActivity extends AppCompatActivity {
         GsonParser parser = new GsonParser();
         NiceApiClient.init(getApplicationContext(),
                 NiceHttpConfig
-                        .newBuild(new ApiByOkHttp(getApplicationContext(), parser),
-                                parser).setDebug(BuildConfig.DEBUG).build());
+                        .newBuild(new ApiByOkHttp(getApplicationContext()), parser)
+                        .customPrinter(new MyLogPrinter())
+                        .setDebug(BuildConfig.DEBUG).build());
 
         btnGet.setOnClickListener(new View.OnClickListener() {
 
@@ -69,6 +72,95 @@ public class MainActivity extends AppCompatActivity {
                 }.start();
             }
         });
+    }
+
+
+    /**
+     * 使用者自定义配置打印Log
+     */
+    private static class MyLogPrinter implements Printer {
+
+        @Override
+        public void setDebug(boolean isDebug) {
+            L.configAllowLog(isDebug);
+        }
+
+        @Override
+        public void printRequest(String url, ApiParams params) {
+            L.d(url);
+            L.d(params);
+        }
+
+        @Override
+        public void printResult(String clazzName, String json) {
+            L.d(clazzName);
+            L.json(json);
+        }
+
+        @Override
+        public void v(String msg, Object... args) {
+            L.v(msg, args);
+        }
+
+        @Override
+        public void v(Object object) {
+            L.v(object);
+        }
+
+        @Override
+        public void d(String msg, Object... args) {
+            L.d(msg, args);
+        }
+
+        @Override
+        public void d(Object object) {
+            L.d(object);
+        }
+
+        @Override
+        public void i(String msg, Object... args) {
+            L.i(msg, args);
+        }
+
+        @Override
+        public void i(Object object) {
+            L.i(object);
+        }
+
+        @Override
+        public void w(String msg, Object... args) {
+            L.w(msg, args);
+        }
+
+        @Override
+        public void w(Object object) {
+            L.w(object);
+        }
+
+        @Override
+        public void e(String msg, Object... args) {
+            L.e(msg, args);
+        }
+
+        @Override
+        public void e(Object object) {
+            L.e(object);
+        }
+
+        @Override
+        public void wtf(String msg, Object... args) {
+            L.wtf(msg, args);
+        }
+
+        @Override
+        public void wtf(Object object) {
+            L.wtf(object);
+        }
+
+        @Override
+        public void json(String json) {
+            L.json(json);
+        }
     }
 
     /**
